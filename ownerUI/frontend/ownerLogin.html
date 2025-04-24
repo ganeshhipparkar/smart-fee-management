@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Owner Login - Smart Fee Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script>
+        // Tailwind dark mode config
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#121826',
+                        darkcard: '#1E293B',
+                        darktext: '#E2E8F0'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%);
+        }
+
+        html.dark .gradient-bg {
+            background: linear-gradient(135deg, #4F46E5 0%, #9333EA 100%);
+        }
+
+        .input {
+            display: block;
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #E2E8F0;
+            border-radius: 0.5rem;
+            background-color: #F9FAFB;
+            color: #1F2937;
+            font-size: 0.875rem;
+            line-height: 1.25rem;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+
+        html.dark .input {
+            background-color: #1E293B;
+            border-color: #334155;
+            color: #E2E8F0;
+        }
+
+        .input:focus {
+            outline: none;
+            border-color: #6366F1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        html.dark .glass-effect {
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        /* Theme toggle styles */
+        .theme-toggle {
+            cursor: pointer;
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background-color: #E2E8F0;
+            border-radius: 24px;
+            transition: all 0.3s;
+        }
+
+        html.dark .theme-toggle {
+            background-color: #334155;
+        }
+
+        .theme-toggle::after {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            background-color: #6366F1;
+            transition: all 0.3s;
+        }
+
+        html.dark .theme-toggle::after {
+            transform: translateX(24px);
+            background-color: #A855F7;
+        }
+
+        /* Dark mode transition */
+        .dark-transition {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        /* Message animation */
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
+        }
+        
+        .message-animate-in {
+            animation: slideIn 0.3s forwards;
+        }
+        
+        .message-animate-out {
+            animation: fadeOut 0.3s forwards;
+        }
+    </style>
+</head>
+<body class="dark-transition bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-slate-900 dark:via-darkbg dark:to-slate-900 min-h-screen">
+    <nav class="glass-effect fixed w-full z-50 px-6 py-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="w-10 h-10 rounded-lg gradient-bg flex items-center justify-center text-white font-bold text-xl mr-3">S</div>
+                <span class="text-xl font-bold text-indigo-800 dark:text-indigo-300">SmartFee</span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="../../landingPage.html" class="text-gray-700 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 transition">Home</a>
+                <a href="../../landingPage.html#features" class="text-gray-700 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 transition">Features</a>
+                <a href="../../landingPage.html" class="text-gray-700 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 transition">Why Choose Us</a>
+                <a href="../../landingPage.html" class="text-gray-700 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 transition">Contact</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle dark mode"></div>
+                <a href="../../ownerRegister.html" class="hidden md:inline-flex px-4 py-2 rounded-lg border border-indigo-600 dark:border-indigo-400 text-indigo-600 dark:text-indigo-300 font-medium hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition">Register</a>
+                <span class="gradient-bg px-4 py-2 rounded-lg text-white font-medium">Login</span>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-24 pb-10 px-4 flex items-center justify-center min-h-screen">
+        <div class="w-full max-w-md bg-white dark:bg-darkcard shadow-xl rounded-2xl p-8">
+            <h1 class="text-3xl font-bold text-center text-indigo-700 dark:text-indigo-400 mb-8">Owner Login</h1>
+
+            <form class="space-y-6" id="ownerLoginForm">
+                <div>
+                    <label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Business Email</label>
+                    <input type="email" id="email" name="email" class="input" required>
+                </div>
+                
+                <div>
+                    <div class="flex items-center justify-between mb-1">
+                        <label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label>
+                        <a href="#" class="text-sm text-indigo-600 dark:text-indigo-400 hover:underline">Forgot Password?</a>
+                    </div>
+                    <input type="password" id="password" name="password" class="input" required>
+                </div>
+
+                <div class="flex items-center">
+                    <input type="checkbox" id="remember" name="remember" class="h-4 w-4 text-indigo-600 focus:ring-indigo-500 border-gray-300 rounded">
+                    <label for="remember" class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Remember me</label>
+                </div>
+
+                <div>
+                    <button type="submit" class="w-full gradient-bg text-white py-3 rounded-lg hover:opacity-90 font-semibold transition">Sign in</button>
+                </div>
+            </form>
+
+            <div class="mt-6 text-center">
+                <p class="text-sm text-gray-600 dark:text-gray-400">
+                    Don't have an account? 
+                    <a href="../../ownerRegister.html" class="text-indigo-600 dark:text-indigo-400 hover:underline">Register here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center text-gray-500 dark:text-gray-400 text-sm p-4 fixed bottom-0 w-full">
+        &copy; 2025 Smart Fee Management. All rights reserved.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Theme toggle functionality
+            const htmlElement = document.documentElement;
+            const themeToggle = document.getElementById('themeToggle');
+
+            // Check for saved theme preference or respect OS setting
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            // Apply the right theme
+            if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                htmlElement.classList.add('dark');
+            } else {
+                htmlElement.classList.remove('dark');
+            }
+
+            // Toggle theme when button is clicked
+            themeToggle.addEventListener('click', () => {
+                if (htmlElement.classList.contains('dark')) {
+                    htmlElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    htmlElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+
+            // Function to display messages to the user
+            window.showMessage = function(message, type) {
+                // Check if a message container already exists
+                let messageContainer = document.getElementById('message-container');
+                
+                // If not, create one
+                if (!messageContainer) {
+                    messageContainer = document.createElement('div');
+                    messageContainer.id = 'message-container';
+                    messageContainer.className = 'fixed top-5 right-5 z-50 max-w-md';
+                    document.body.appendChild(messageContainer);
+                }
+                
+                // Create the message element
+                const messageElement = document.createElement('div');
+                messageElement.className = `p-4 mb-3 rounded-lg shadow-lg message-animate-in ${
+                    type === 'success' 
+                        ? 'bg-green-500 text-white' 
+                        : 'bg-red-500 text-white'
+                }`;
+                messageElement.textContent = message;
+                
+                // Add to container
+                messageContainer.appendChild(messageElement);
+                
+                // Remove after delay
+                setTimeout(() => {
+                    messageElement.classList.remove('message-animate-in');
+                    messageElement.classList.add('message-animate-out');
+                    setTimeout(() => {
+                        messageContainer.removeChild(messageElement);
+                    }, 300);
+                }, 5000);
+            };
+
+            // Form submission
+            const form = document.getElementById('ownerLoginForm');
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                
+                // Create login data object
+                const loginData = {
+                    email: document.getElementById('email').value,
+                    password: document.getElementById('password').value
+                };
+
+                try {
+                    // Show loading state
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    const originalBtnText = submitBtn.textContent;
+                    submitBtn.textContent = 'Signing in...';
+                    submitBtn.disabled = true;
+                    
+                    // Send login request to server
+                    const response = await fetch('http://localhost:3000/api/owner/login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(loginData)
+                    });
+                    
+                    const data = await response.json();
+                    
+                    // Reset button
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.disabled = false;
+                    
+                    if (response.ok) {
+                        // Store owner data in localStorage for session management
+                        localStorage.setItem('ownerUser', JSON.stringify(data.owner));
+                        localStorage.setItem('isOwnerLoggedIn', 'true');
+                        localStorage.setItem('ownerToken', data.token);
+                        
+                        // Show success message
+                        showMessage('Login successful! Redirecting...', 'success');
+                        
+                        // Redirect to dashboard after a short delay
+                        setTimeout(() => {
+                            window.location.href = 'ownerDashboard.html';
+                        }, 1500);
+                    } else {
+                        // Show error message
+                        showMessage(data.message || 'Login failed. Please check your credentials.', 'error');
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                    showMessage('An error occurred during login. Please try again later.', 'error');
+                    
+                    // Reset button
+                    const submitBtn = form.querySelector('button[type="submit"]');
+                    submitBtn.textContent = originalBtnText;
+                    submitBtn.disabled = false;
+                }
+            });
+
+            // Check for "registered=true" parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('registered') === 'true') {
+                showMessage('Business registration successful! You can now log in with your credentials.', 'success');
+            }
+        });
+    </script>
+</body>
+</html>

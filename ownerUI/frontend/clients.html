@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clients Dashboard - Smart Fee Management</title>
+    <link rel="stylesheet" href="clients.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Tailwind dark mode config
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#121826',
+                        darkcard: '#1E293B',
+                        darktext: '#E2E8F0'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="dark-transition">
+    <div class="container">
+        <header class="top-nav">
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"></path>
+                    <path d="M7 7h.01"></path>
+                </svg>
+                SmartFee
+            </div>
+            <input type="search" placeholder="Search clients, services or payments..." class="search-bar">
+            <div class="user-menu">
+                <div class="notification">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"></path>
+                        <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"></path>
+                    </svg>
+                    <span class="notification-count">3</span>
+                </div>
+                <div class="user-profile">
+                    <div class="user-avatar">JD</div>
+                    <span>John Doe</span>
+                </div>
+            </div>
+        </header>
+
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 2H2v10l9.29 9.29c.94.94 2.48.94 3.42 0l6.58-6.58c.94-.94.94-2.48 0-3.42L12 2Z"></path>
+                        <path d="M7 7h.01"></path>
+                    </svg>
+                    SmartFee
+                </div>
+            </div>
+            <nav>
+                <ul>
+                    <li>
+                        <a href="ownerDashboard.html">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="3" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="3" width="7" height="7"></rect>
+                                <rect x="14" y="14" width="7" height="7"></rect>
+                                <rect x="3" y="14" width="7" height="7"></rect>
+                            </svg>
+                            Dashboard
+                        </a>
+                    </li>
+                    <li>
+                        <a href="services.html">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path>
+                                <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+                                <line x1="12" y1="19" x2="12" y2="22"></line>
+                            </svg>
+                            Services
+                        </a>
+                    </li>
+                    <li>
+                        <a href="clients.html" class="active">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M22 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            Clients
+                        </a>
+                    </li>
+                    <li>
+                        <a href="payments.html">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+                                <line x1="2" y1="10" x2="22" y2="10"></line>
+                            </svg>
+                            Payments
+                        </a>
+                    </li>
+                    <li>
+                        <a href="reports.html">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                                <line x1="10" y1="9" x2="8" y2="9"></line>
+                            </svg>
+                            Reports
+                        </a>
+                    </li>
+                    <li>
+                        <a href="access-keys.html">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3L22 7l-3-3m-3.5 3.5L19 4"></path>
+                            </svg>
+                            Access Keys
+                        </a>
+                    </li>
+                    <li>
+                        <a href="settings.html">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+                            </svg>
+                            Settings
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <h1>Client Management</h1>
+
+            <section class="kpi-cards">
+                <div class="card total">
+                    <h2>Total Clients</h2>
+                    <p class="count" id="total-clients">48</p>
+                    <p class="detail">Across 5 services</p>
+                </div>
+                <div class="card active">
+                    <h2>Active Clients</h2>
+                    <p class="count" id="active-clients">42</p>
+                    <p class="detail">87.5% of total clients</p>
+                </div>
+                <div class="card inactive">
+                    <h2>Inactive Clients</h2>
+                    <p class="count" id="inactive-clients">6</p>
+                    <p class="detail">12.5% of total clients</p>
+                </div>
+                <div class="card new">
+                    <h2>New This Month</h2>
+                    <p class="count" id="new-clients">8</p>
+                    <p class="detail">+14% from last month</p>
+                </div>
+            </section>
+
+            <section class="data-section clients-section">
+                <h2>
+                    <span>Client List</span>
+                    <button class="btn" id="add-client-btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="12" y1="5" x2="12" y2="19"></line>
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                        </svg>
+                        Add New Client
+                    </button>
+                </h2>
+                
+                <div class="filter-controls">
+                    <div class="filter-group">
+                        <label class="filter-label">Search:</label>
+                        <input type="search" placeholder="Search by name, email or phone..." class="search-input" id="client-search">
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Service:</label>
+                        <select class="filter-select" id="service-filter">
+                            <option value="">All Services</option>
+                            <option value="yoga">Yoga Classes</option>
+                            <option value="music">Music Classes</option>
+                            <option value="fitness">Fitness Training</option>
+                            <option value="dance">Dance Classes</option>
+                            <option value="coding">Coding Bootcamp</option>
+                            <option value="guitar">Guitar Lessons</option>
+                            <option value="art">Art Classes</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Status:</label>
+                        <select class="filter-select" id="status-filter">
+                            <option value="">All Statuses</option>
+                            <option value="active">Active</option>
+                            <option value="inactive">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <table id="clients-table">
+                    <thead>
+                        <tr>
+                            <th>Client Name</th>
+                            <th>Contact Info</th>
+                            <th>Enrolled Services</th>
+                            <th>Last Payment</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Rahul Sharma</td>
+                            <td>
+                                <div>rahul.s@example.com</div>
+                                <div>+91 98765 43210</div>
+                            </td>
+                            <td>Yoga Classes</td>
+                            <td>15 Mar 2025</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td class="actions">
+                                <button class="btn btn-sm btn-outline">View</button>
+                                <button class="btn btn-sm">Send Reminder</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Priya Patel</td>
+                            <td>
+                                <div>priya.p@example.com</div>
+                                <div>+91 98765 12345</div>
+                            </td>
+                            <td>Music Classes</td>
+                            <td>10 Mar 2025</td>
+                            <td><span class="status-badge status-active">Active</span></td>
+                            <td class="actions">
+                                <button class="btn btn-sm btn-outline">View</button>
+                                <button class="btn btn-sm">Send Reminder</button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Arjun Kapoor</td>
+                            <td>
+                                <div>arjun.k@example.com</div>
+                                </td>
+                                </tr>
+                                </tbody>
+                                </table>
+                                </section>
+                                </main>
+                                </div>
+                                </body>
+                                </html>
+                                
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Theme toggle functionality
+        const htmlElement = document.documentElement;
+        const themeToggle = document.getElementById('themeToggle');
+
+        // Check for saved theme preference or respect OS setting
+        const savedTheme = localStorage.getItem('theme');
+        const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+        // Apply the right theme
+        if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+            htmlElement.classList.add('dark');
+        } else {
+            htmlElement.classList.remove('dark');
+        }
+
+        // Toggle theme when button is clicked
+        themeToggle.addEventListener('click', () => {
+            if (htmlElement.classList.contains('dark')) {
+                htmlElement.classList.remove('dark');
+                localStorage.setItem('theme', 'light');
+            } else {
+                htmlElement.classList.add('dark');
+                localStorage.setItem('theme', 'dark');
+            }
+        });
+
+        // Mobile sidebar functionality
+        const sidebar = document.getElementById('sidebar');
+        const toggleSidebarBtn = document.getElementById('toggleSidebar');
+        const closeSidebarBtn = document.getElementById('closeSidebar');
+
+        toggleSidebarBtn.addEventListener('click', () => {
+            sidebar.classList.toggle('-translate-x-full');
+        });
+
+        closeSidebarBtn.addEventListener('click', () => {
+            sidebar.classList.add('-translate-x-full');
+        });
+    });
+</script>
+                                

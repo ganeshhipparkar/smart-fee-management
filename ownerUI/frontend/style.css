@@ -1,0 +1,213 @@
+/* style.css */
+body {
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+}
+
+.container {
+    display: grid;
+    grid-template-columns: 220px 1fr; /* Sidebar width and main content */
+    grid-template-rows: 60px 1fr;    /* Header height and content row */
+    grid-template-areas:
+        "header header"
+        "sidebar main";
+    height: 100vh;
+}
+
+/* --- Top Navigation --- */
+.top-nav {
+    grid-area: header;
+    background-color: #ffffff;
+    border-bottom: 1px solid #ddd;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    justify-content: space-between;
+}
+
+.logo {
+    font-weight: bold;
+    font-size: 1.5em;
+    color: #2a9d8f; /* Example color */
+}
+
+.search-bar {
+    padding: 8px 15px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    width: 300px; /* Adjust as needed */
+}
+
+.user-menu span {
+    margin-left: 20px;
+    cursor: pointer;
+}
+
+/* --- Sidebar --- */
+.sidebar {
+    grid-area: sidebar;
+    background-color: #34495e; /* Dark blue-grey */
+    color: #ecf0f1; /* Light text */
+    padding-top: 20px;
+}
+
+.sidebar nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.sidebar nav ul li a {
+    display: block;
+    padding: 15px 20px;
+    color: #ecf0f1;
+    text-decoration: none;
+    transition: background-color 0.2s ease;
+}
+
+.sidebar nav ul li a:hover,
+.sidebar nav ul li a.active {
+    background-color: #2c3e50; /* Slightly darker background */
+}
+
+/* --- Main Content --- */
+.main-content {
+    grid-area: main;
+    overflow-y: auto; /* Enable scrolling for content */
+    padding: 30px;
+}
+
+.main-content h1 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+
+/* --- KPI Cards --- */
+.kpi-cards {
+    display: flex;
+    gap: 20px; /* Space between cards */
+    margin-bottom: 30px;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+}
+
+.card {
+    background-color: #ffffff;
+    border-radius: 8px;
+    padding: 20px;
+    flex: 1; /* Distribute space equally */
+    min-width: 200px; /* Minimum width before wrapping */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border-left: 5px solid #ccc; /* Default border */
+}
+
+.card h2 {
+    margin-top: 0;
+    font-size: 1em;
+    color: #555;
+    margin-bottom: 10px;
+}
+
+.card .count {
+    font-size: 2.2em;
+    font-weight: bold;
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.card .detail {
+    font-size: 0.9em;
+    color: #777;
+}
+
+/* Specific Card Colors */
+.card.upcoming { border-left-color: #f39c12; } /* Orange */
+.card.overdue { border-left-color: #e74c3c; } /* Red */
+.card.clients { border-left-color: #3498db; } /* Blue */
+.card.revenue { border-left-color: #2ecc71; } /* Green */
+
+/* --- Data Tables --- */
+.data-section {
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.data-section h2 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    text-align: left;
+    padding: 12px 15px;
+    border-bottom: 1px solid #eee;
+}
+
+thead th {
+    background-color: #f9f9f9;
+    font-weight: bold;
+    color: #555;
+}
+
+tbody tr:hover {
+    background-color: #f4f7f6;
+}
+
+/* Table action buttons */
+td button {
+    padding: 5px 10px;
+    font-size: 0.8em;
+    margin-right: 5px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    color: white;
+}
+
+.btn-reminder { background-color: #f39c12; } /* Orange */
+.btn-paid { background-color: #2ecc71; } /* Green */
+.btn-view { background-color: #3498db; } /* Blue */
+
+.btn-reminder:hover { background-color: #d88c0b; }
+.btn-paid:hover { background-color: #27ae60; }
+.btn-view:hover { background-color: #2980b9; }
+
+/* Quick Actions */
+.quick-actions {
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #eee;
+}
+.quick-actions h2 {
+     margin-bottom: 15px;
+}
+
+.action-btn {
+    padding: 10px 18px;
+    margin-right: 10px;
+    margin-bottom: 10px; /* For wrapping */
+    background-color: #2a9d8f; /* Theme color */
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 0.9em;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.action-btn:hover {
+    background-color: #268c80;
+}

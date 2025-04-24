@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Services - Smart Fee Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script>
+        // Tailwind dark mode config
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#121826',
+                        darkcard: '#1E293B',
+                        darktext: '#E2E8F0'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%);
+        }
+
+        html.dark .gradient-bg {
+            background: linear-gradient(135deg, #4F46E5 0%, #9333EA 100%);
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        html.dark .glass-effect {
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        /* Theme toggle styles */
+        .theme-toggle {
+            cursor: pointer;
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background-color: #E2E8F0;
+            border-radius: 24px;
+            transition: all 0.3s;
+        }
+
+        html.dark .theme-toggle {
+            background-color: #334155;
+        }
+
+        .theme-toggle::after {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            background-color: #6366F1;
+            transition: all 0.3s;
+        }
+
+        html.dark .theme-toggle::after {
+            transform: translateX(24px);
+            background-color: #A855F7;
+        }
+
+        /* Dark mode transition */
+        .dark-transition {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        html.dark ::-webkit-scrollbar-track {
+            background: #1E293B;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #6366F1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #4F46E5;
+        }
+
+        /* Sidebar width variable */
+        :root {
+            --sidebar-width: 280px;
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1000;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+            padding: 20px;
+        }
+        
+        .modal-content {
+            background-color: #fff;
+            max-width: 600px;
+            margin: 30px auto;
+            padding: 24px;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            position: relative;
+        }
+        
+        html.dark .modal-content {
+            background-color: #1E293B;
+            color: #E2E8F0;
+        }
+        
+        .close-button {
+            position: absolute;
+            top: 16px;
+            right: 16px;
+            font-size: 24px;
+            cursor: pointer;
+            color: #6B7280;
+        }
+        
+        html.dark .close-button {
+            color: #9CA3AF;
+        }
+        
+        .close-button:hover {
+            color: #374151;
+        }
+        
+        html.dark .close-button:hover {
+            color: #F9FAFB;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: #374151;
+        }
+        
+        html.dark .form-group label {
+            color: #E5E7EB;
+        }
+        
+        .form-group input, 
+        .form-group select, 
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #D1D5DB;
+            border-radius: 6px;
+            font-size: 14px;
+            background-color: #F9FAFB;
+            color: #111827;
+        }
+        
+        html.dark .form-group input, 
+        html.dark .form-group select, 
+        html.dark .form-group textarea {
+            background-color: #374151;
+            border-color: #4B5563;
+            color: #F9FAFB;
+        }
+        
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+        
+        .payment-plan-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+            align-items: center;
+        }
+        
+        .plan-type {
+            flex: 2;
+        }
+        
+        .plan-amount {
+            flex: 1;
+        }
+        
+        .btn {
+            padding: 10px 16px;
+            border-radius: 6px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 14px;
+        }
+        
+        .btn-small {
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%);
+            color: white;
+            border: none;
+        }
+        
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+        
+        .btn-danger {
+            background-color: #EF4444;
+            color: white;
+            border: none;
+        }
+        
+        .btn-danger:hover {
+            background-color: #DC2626;
+        }
+        
+        .remove-plan-btn {
+            background-color: #EF4444;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .remove-plan-btn:hover {
+            background-color: #DC2626;
+        }
+    </style>
+</head>
+<body class="dark-transition bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-slate-900 dark:via-darkbg dark:to-slate-900 min-h-screen">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="fixed inset-y-0 left-0 z-50 w-[var(--sidebar-width)] bg-white dark:bg-darkcard shadow-lg transform transition-transform duration-300 ease-in-out" id="sidebar">
+            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-lg gradient-bg flex items-center justify-center text-white font-bold text-xl mr-3">S</div>
+                    <span class="text-xl font-bold text-indigo-800 dark:text-indigo-300">SmartFee</span>
+                </div>
+                <button id="closeSidebar" class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="p-4">
+                <div class="mb-8">
+                    <h5 class="text-sm font-medium text-gray-400 dark:text-gray-500 mb-4 uppercase">Main Menu</h5>
+            <nav>
+                        <ul class="space-y-2">
+                            <li>
+                                <a href="ownerDashboard.html" class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                                    </svg>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="#" class="flex items-center p-3 text-gray-800 dark:text-gray-200 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 font-medium">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                    Services
+                                </a>
+                            </li>
+                            <li>
+                                <a href="clients.html" class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                    Clients
+                                </a>
+                            </li>
+                            <li>
+                                <a href="payments.html" class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                    Payments
+                                </a>
+                            </li>
+                            <li>
+                                <a href="reports.html" class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Reports
+                                </a>
+                            </li>
+                            <li>
+                                <a href="access-keys.html" class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                                    </svg>
+                                    Access Keys
+                                </a>
+                            </li>
+                            <li>
+                                <a href="settings.html" class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    Settings
+                                </a>
+                            </li>
+                    </ul>
+            </nav>
+                </div>
+                <div>
+                    <h5 class="text-sm font-medium text-gray-400 dark:text-gray-500 mb-4 uppercase">Account</h5>
+                    <a href="logout.html" class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 ml-0 md:ml-[var(--sidebar-width)] transition-all duration-300 ease-in-out">
+            <!-- Top Navbar -->
+            <header class="sticky top-0 z-40 glass-effect">
+                <div class="h-16 px-4 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <button id="toggleSidebar" class="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 md:hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                        <h1 class="ml-2 text-lg font-semibold text-gray-800 dark:text-white md:ml-0">Services</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle dark mode"></div>
+                        <div class="relative">
+                            <button class="p-2 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 rounded-lg">
+                                <span class="material-icons">notifications</span>
+                                <span class="absolute top-0 right-0 w-2 h-2 bg-red-500 rounded-full"></span>
+                            </button>
+                        </div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full gradient-bg flex items-center justify-center text-white font-medium">A</div>
+                        </div>
+                    </div>
+                </div>
+        </header>
+
+            <!-- Page Content -->
+            <main class="p-4 md:p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <div>
+                        <h2 class="text-2xl font-semibold text-gray-800 dark:text-white">Manage Services</h2>
+                        <p class="text-gray-600 dark:text-gray-400 mt-1">Add, edit, or remove your service offerings</p>
+                    </div>
+                    <button id="addOfferingBtn" class="gradient-bg text-white px-4 py-2 rounded-lg font-medium hover:opacity-90 transition flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                        </svg>
+                        Add Service
+                    </button>
+                </div>
+
+                <!-- Table for Offerings -->
+                <div class="bg-white dark:bg-darkcard rounded-xl shadow-md p-4 mb-6 overflow-x-auto">
+                    <table class="w-full">
+                    <thead>
+                            <tr class="text-left border-b border-gray-200 dark:border-gray-700">
+                                <th class="py-3 px-4 text-gray-700 dark:text-gray-300">Name</th>
+                                <th class="py-3 px-4 text-gray-700 dark:text-gray-300">Description</th>
+                                <th class="py-3 px-4 text-gray-700 dark:text-gray-300">Service ID</th>
+                                <th class="py-3 px-4 text-gray-700 dark:text-gray-300">Payment Plans</th>
+                                <th class="py-3 px-4 text-gray-700 dark:text-gray-300">Entry Code</th>
+                                <th class="py-3 px-4 text-gray-700 dark:text-gray-300">Status</th>
+                                <th class="py-3 px-4 text-gray-700 dark:text-gray-300">Clients</th>
+                                <th class="py-3 px-4 text-gray-700 dark:text-gray-300">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="offeringsTableBody">
+                        <tr>
+                                <td colspan="8" class="text-center py-4 text-gray-500 dark:text-gray-400">Loading offerings...</td>
+                        </tr>
+                        </tbody>
+                </table>
+            </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Service Card Example -->
+                    <div class="bg-white dark:bg-darkcard rounded-xl shadow-md p-6">
+                        <div class="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Basic Package</h3>
+                                <p class="text-gray-600 dark:text-gray-400 text-sm mt-1">Monthly subscription</p>
+                            </div>
+                            <span class="text-lg font-semibold text-indigo-600 dark:text-indigo-400">₹499</span>
+                        </div>
+                        <p class="text-gray-600 dark:text-gray-400 text-sm mb-4">Access to basic features including payment tracking and simple reports.</p>
+                        <div class="flex gap-2">
+                            <button class="flex-1 px-3 py-2 text-indigo-600 dark:text-indigo-400 border border-indigo-600 dark:border-indigo-400 rounded-lg hover:bg-indigo-50 dark:hover:bg-indigo-900/30 transition">Edit</button>
+                            <button class="flex-1 px-3 py-2 text-red-600 dark:text-red-400 border border-red-600 dark:border-red-400 rounded-lg hover:bg-red-50 dark:hover:bg-red-900/30 transition">Delete</button>
+                        </div>
+                    </div>
+    </div>
+
+    <div id="offeringModal" class="modal">
+        <div class="modal-content">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 id="modalTitle" class="text-xl font-semibold text-gray-800 dark:text-white">Add New Offering</h3>
+                            <button class="close-button text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">&times;</button>
+                        </div>
+                        
+                        <form id="offeringForm" class="space-y-6">
+                <input type="hidden" id="offeringId">
+
+                <div class="form-group">
+                                <label for="offeringName" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Offering Name:</label>
+                                <input type="text" id="offeringName" required class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                </div>
+
+                <div class="form-group">
+                                <label for="offeringDescription" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Description:</label>
+                                <textarea id="offeringDescription" class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent dark:bg-gray-700 dark:text-white" rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                                <label for="offeringStatus" class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Status:</label>
+                                <select id="offeringStatus" required class="w-full px-4 py-2 rounded-lg border border-gray-300 dark:border-gray-600 focus:ring-2 focus:ring-indigo-500 dark:focus:ring-indigo-400 focus:border-transparent dark:bg-gray-700 dark:text-white">
+                        <option value="active">Active</option>
+                        <option value="inactive">Inactive</option>
+                    </select>
+                </div>
+
+                            <div id="serviceIdContainer" class="form-group p-4 rounded-lg bg-gray-50 dark:bg-gray-800" style="display: none;">
+                                <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Service ID:</label>
+                                <span id="serviceIdDisplay" class="text-indigo-600 dark:text-indigo-400 font-medium text-lg"></span>
+                                <p class="text-sm text-gray-500 dark:text-gray-400 mt-2">This unique ID can be used by clients to access this service</p>
+                </div>
+
+                <div class="form-group">
+                                <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Payment Plans:</label>
+                                <div id="paymentPlansContainer" class="space-y-3">
+                                    <!-- Payment plan inputs will be added dynamically -->
+                        </div>
+                                <button type="button" id="addPlanBtn" class="mt-3 px-4 py-2 bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300 rounded-lg hover:bg-indigo-200 dark:hover:bg-indigo-800/60 transition flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
+                                    </svg>
+                                    Add Plan
+                                </button>
+                </div>
+
+                            <div id="entryCodeDisplay" class="form-group p-4 rounded-lg bg-gray-50 dark:bg-gray-800" style="display: none;">
+                                <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Entry Code:</label>
+                                <div class="flex items-center gap-3">
+                                    <span id="currentEntryCode" class="font-mono bg-white dark:bg-gray-700 px-3 py-1 rounded border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200"></span>
+                                    <button type="button" id="copyEntryCodeBtn" class="px-3 py-1 bg-blue-100 text-blue-700 dark:bg-blue-900/50 dark:text-blue-300 rounded hover:bg-blue-200 dark:hover:bg-blue-800/60 transition">
+                                        Copy
+                                    </button>
+                                    <button type="button" id="regenerateEntryCodeBtn" class="px-3 py-1 bg-red-100 text-red-700 dark:bg-red-900/50 dark:text-red-300 rounded hover:bg-red-200 dark:hover:bg-red-800/60 transition">
+                                        Regenerate
+                                    </button>
+                                </div>
+                                <p class="text-sm text-red-500 dark:text-red-400 mt-2">Warning: Regenerating the code will invalidate the old one.</p>
+                </div>
+
+                            <div class="pt-4 border-t border-gray-200 dark:border-gray-700">
+                                <button type="submit" class="w-full py-3 gradient-bg text-white rounded-lg font-medium hover:opacity-90 transition focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+                                    Save Offering
+                                </button>
+                            </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="viewCodeModal" class="modal">
+        <div class="modal-content">
+                        <div class="flex justify-between items-center mb-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white">Offering Entry Code</h3>
+                            <button class="close-button text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200">&times;</button>
+                        </div>
+                        
+                        <div class="space-y-6">
+            <div class="form-group">
+                                <label class="block text-gray-700 dark:text-gray-300 font-medium mb-2">Code:</label>
+                                <span id="displayEntryCode" class="font-mono bg-white dark:bg-gray-700 px-3 py-2 rounded border border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200 block"></span>
+                            </div>
+                            
+                            <div class="flex gap-3">
+                                <button type="button" id="copyCodeFromViewModalBtn" class="flex-1 py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg transition focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+                                    Copy Code
+                                </button>
+                                <button type="button" id="regenerateCodeFromViewModalBtn" class="flex-1 py-2 px-4 bg-red-600 hover:bg-red-700 text-white rounded-lg transition focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 dark:focus:ring-offset-gray-800">
+                                    Regenerate Code
+                                </button>
+                            </div>
+                            
+                            <div class="p-3 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg mt-4">
+                                <p class="text-red-700 dark:text-red-400 text-sm">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 inline-block mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                                    </svg>
+                                    Regenerating the code will invalidate the old one. Clients using the old code will lose access.
+                                </p>
+                            </div>
+                        </div>
+            </div>
+             </div>
+            </main>
+        </div>
+    </div>
+
+    <script>async function fetchAndDisplayServices() {
+        try {
+            // Show loading state
+            const servicesTable = document.getElementById('servicesTable');
+            servicesTable.innerHTML = `
+                <tr>
+                    <td colspan="5" class="px-6 py-4 text-center">
+                        <div class="py-6">
+                            <p class="text-gray-500 dark:text-gray-400">Loading services...</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+            
+            const response = await fetch('http://localhost:3000/api/owner-services');
+            const data = await response.json();
+            
+            if (data.success) {
+                if (data.services.length === 0) {
+                    servicesTable.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="px-6 py-4 text-center">
+                                <div class="py-6">
+                                    <p class="text-gray-500 dark:text-gray-400">No services available at the moment.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+    
+                servicesTable.innerHTML = data.services.map(service => {
+                    // Ensure payment settings is always an array
+                    let paymentOptions = [];
+                    
+                    if (service.paymentSettings && Array.isArray(service.paymentSettings)) {
+                        paymentOptions = service.paymentSettings;
+                    } else if (service.paymentSettings && typeof service.paymentSettings === 'string') {
+                        // Handle case where paymentSettings might be a JSON string
+                        try {
+                            const parsedSettings = JSON.parse(service.paymentSettings);
+                            paymentOptions = Array.isArray(parsedSettings) ? parsedSettings : [service.paymentSettings];
+                        } catch (e) {
+                            paymentOptions = [service.paymentSettings];
+                        }
+                    } else {
+                        paymentOptions = ['Contact for details'];
+                    }
+                    
+                    // Format payment options for display
+                    const formattedPaymentOptions = paymentOptions.map(option => {
+                        // Capitalize first letter and format
+                        return option.charAt(0).toUpperCase() + option.slice(1).replace('-', ' ');
+                    });
+                        
+                    return `
+                    <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                        <td class="px-6 py-4">
+                            <div class="flex items-center">
+                                <div>
+                                    <div class="font-medium text-gray-900 dark:text-white">${service.businessName || 'Unnamed Business'}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">
+                                        ${service.businessType === 'other' && service.otherBusinessType 
+                                            ? service.otherBusinessType 
+                                            : service.businessType || 'Business'}
+                                    </div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                        ID: ${service.registrationNo || 'N/A'}
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900 dark:text-white">${service.businessEmail || 'No email available'}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400">${service.businessPhone || 'No phone available'}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">${service.businessAddress || 'No address available'}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900 dark:text-white">${service.serviceName || 'Service'}</div>
+                            <div class="text-sm text-gray-500 dark:text-gray-400 line-clamp-2">${service.serviceDescription || 'No description available'}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Capacity: ${service.capacity || 'Not specified'}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900 dark:text-white">
+                                ${formattedPaymentOptions.join(', ')}
+                            </div>
+                        </td>
+                        <td class="px-6 py-4 text-right">
+                            <button 
+                                class="gradient-bg px-4 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90 transition"
+                                onclick="showEnrollmentModal('${service._id}', '${service.serviceName || 'Service'}', '${service.businessName || 'Business'}', '${formattedPaymentOptions.join(',')}', '${service.serviceDescription || ''}', ${JSON.stringify(paymentOptions).replace(/"/g, '&quot;')})"
+                            >
+                                Enroll
+                            </button>
+                        </td>
+                    </tr>
+                `}).join('');
+    
+                // Add search functionality
+                const searchInput = document.getElementById('serviceSearch');
+                searchInput.addEventListener('input', (e) => {
+                    const searchTerm = e.target.value.toLowerCase();
+                    const rows = servicesTable.getElementsByTagName('tr');
+                    
+                    Array.from(rows).forEach(row => {
+                        const text = row.textContent.toLowerCase();
+                        row.style.display = text.includes(searchTerm) ? '' : 'none';
+                    });
+                });
+    
+            } else {
+                showToast('Failed to load services', false);
+                servicesTable.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="px-6 py-4 text-center">
+                            <div class="py-6">
+                                <p class="text-red-500 dark:text-red-400">Error loading services: ${data.message || 'Unknown error'}</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+        } catch (error) {
+            console.error('Error fetching services:', error);
+            showToast('Failed to load services', false);
+            
+            const servicesTable = document.getElementById('servicesTable');
+            servicesTable.innerHTML = `
+                <tr>
+                    <td colspan="5" class="px-6 py-4 text-center">
+                        <div class="py-6">
+                            <p class="text-red-500 dark:text-red-400">Error connecting to server. Is the backend running?</p>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        }
+    }
+    </script>
+    
+<script>// Update the window.showEnrollmentModal function
+    window.showEnrollmentModal = function(serviceId, serviceName, businessName, paymentOptionsString, serviceDescription, paymentOptionsParsed) {
+        const modalServiceTitle = document.getElementById('modalServiceTitle');
+        const modalServiceProvider = document.getElementById('modalServiceProvider');
+        const modalServiceID = document.getElementById('modalServiceID');
+        const modalServiceDescription = document.getElementById('modalServiceDescription');
+        const planSelector = document.getElementById('planSelector');
+        const requestEnrollment = document.getElementById('requestEnrollment');
+        
+        // Set service details in modal
+        modalServiceTitle.textContent = serviceName;
+        modalServiceProvider.textContent = businessName;
+        modalServiceID.textContent = serviceId;
+        modalServiceDescription.textContent = serviceDescription || 'No description provided for this service.';
+        
+        // Store service ID in button's dataset for later use
+        requestEnrollment.dataset.serviceId = serviceId;
+        
+        // Create payment plan options
+        const paymentOptionsArray = paymentOptionsString.split(',');
+        
+        // Generate payment options with sample prices
+        planSelector.innerHTML = '';
+        
+        paymentOptionsArray.forEach((option, index) => {
+            // Sample pricing based on plan type
+            let basePrice;
+            const planType = option.toLowerCase().trim();
+            
+            if (planType.includes('monthly')) {
+                basePrice = 1000; // ₹1000 for monthly
+            } else if (planType.includes('quarterly')) {
+                basePrice = 2700; // ₹2700 for quarterly (10% discount)
+            } else if (planType.includes('half-yearly') || planType.includes('half yearly')) {
+                basePrice = 5100; // ₹5100 for half-yearly (15% discount)
+            } else if (planType.includes('yearly') || planType.includes('annual')) {
+                basePrice = 9600; // ₹9600 for yearly (20% discount)
+            } else {
+                basePrice = 1500; // Default price if plan type is not recognized
+            }
+            
+            // Create plan option
+            const planOption = document.createElement('div');
+            planOption.className = 'flex items-center p-3 border rounded-lg mb-2 cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400';
+            planOption.innerHTML = `
+                <input type="radio" id="plan-${index}" name="paymentPlan" value="${option}" 
+                    data-type="${planType}" data-amount="${basePrice}" 
+                    class="mr-3 cursor-pointer" ${index === 0 ? 'checked' : ''}>
+                <label for="plan-${index}" class="flex-1 cursor-pointer flex justify-between">
+                    <span class="block text-gray-800 dark:text-white font-medium">${option}</span>
+                    <span class="text-indigo-600 dark:text-indigo-400 font-semibold">₹${basePrice.toLocaleString()}</span>
+                </label>
+            `;
+            
+            planSelector.appendChild(planOption);
+            
+            // Make the entire div clickable to select the radio
+            planOption.addEventListener('click', () => {
+                const radio = planOption.querySelector('input[type="radio"]');
+                radio.checked = true;
+            });
+        });
+        
+        // Show modal with animation
+        const enrollModal = document.getElementById('enrollModal');
+        enrollModal.classList.remove('hidden');
+        
+        // Add animation to modal
+        const modalContent = enrollModal.querySelector('div > div');
+        gsap.fromTo(modalContent, 
+            { y: -20, opacity: 0 }, 
+            { y: 0, opacity: 1, duration: 0.3, ease: 'power2.out' }
+        );
+    };</script>
+    <!-- Include the services.js file -->
+    <script src="services.js"></script>
+</body>
+</html>

@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Owner Dashboard - Smart Fee Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="ownerDashboard.css">
+    <script>
+        // Tailwind dark mode config
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#121826',
+                        darkcard: '#1E293B',
+                        darktext: '#E2E8F0'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="dark-transition bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-slate-900 dark:via-darkbg dark:to-slate-900 min-h-screen">
+    <div class="flex h-screen overflow-hidden">
+        <!-- Sidebar -->
+        <aside class="fixed inset-y-0 left-0 z-50 w-[var(--sidebar-width)] bg-white dark:bg-darkcard shadow-lg transform transition-transform duration-300 ease-in-out" id="sidebar">
+            <div class="flex items-center justify-between p-4 border-b border-gray-200 dark:border-gray-700">
+                <div class="flex items-center">
+                    <div class="w-10 h-10 rounded-lg gradient-bg flex items-center justify-center text-white font-bold text-xl mr-3">S</div>
+                    <span class="text-xl font-bold text-indigo-800 dark:text-indigo-300">SmartFee</span>
+                </div>
+                <button id="closeSidebar" class="md:hidden p-2 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+            <div class="p-4">
+                <div class="mb-8">
+                    <h5 class="text-sm font-medium text-gray-400 dark:text-gray-500 mb-4 uppercase">Main Menu</h5>
+                    <nav>
+                        <ul class="space-y-2">
+                            <li>
+                                <a href="#" class="flex items-center p-3 text-gray-800 dark:text-gray-200 rounded-lg bg-indigo-100 dark:bg-indigo-900/30 font-medium">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-indigo-600 dark:text-indigo-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                                    </svg>
+                                    Dashboard
+                                </a>
+                            </li>
+                            <li>
+                                <a href="services.html" class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                                    </svg>
+                                    Services
+                                </a>
+                            </li>
+                            <li>
+                                <a href="clients.html" class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                                    </svg>
+                                    Clients
+                                </a>
+                            </li>
+                            <li>
+                                <a href="payments.html" class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z" />
+                                    </svg>
+                                    Payments
+                                </a>
+                            </li>
+                            <li>
+                                <a href="reports.html" class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    Reports
+                                </a>
+                            </li>
+                            <li>
+                                <a href="access-keys.html" class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                                    </svg>
+                                    Access Keys
+                                </a>
+                            </li>
+                            <li>
+                                <a href="settings.html" class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                                    </svg>
+                                    Settings
+                                </a>
+                            </li>
+                        </ul>
+                    </nav>
+                </div>
+                <div>
+                    <h5 class="text-sm font-medium text-gray-400 dark:text-gray-500 mb-4 uppercase">Account</h5>
+                    <a href="logout.html" class="flex items-center p-3 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-lg transition">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3 text-gray-500 dark:text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                        </svg>
+                        Logout
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <div class="flex-1 ml-0 md:ml-[var(--sidebar-width)] transition-all duration-300 ease-in-out">
+            <!-- Top Navbar -->
+            <header class="sticky top-0 z-40 glass-effect">
+                <div class="h-16 px-4 flex items-center justify-between">
+                    <div class="flex items-center">
+                        <button id="toggleSidebar" class="p-2 rounded-lg text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 md:hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                            </svg>
+                        </button>
+                        <h1 class="ml-2 text-lg font-semibold text-gray-800 dark:text-white md:ml-0">Yoga Classes Dashboard</h1>
+                    </div>
+                    <div class="flex items-center space-x-4">
+                        <div class="relative">
+                            <button class="relative p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-600 dark:text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                                </svg>
+                                <span class="absolute top-1 right-1 w-4 h-4 bg-red-500 rounded-full text-xs text-white flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                        <div class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle dark mode"></div>
+                        <div class="flex items-center">
+                            <div class="w-8 h-8 rounded-full bg-indigo-600 dark:bg-indigo-500 flex items-center justify-center text-white mr-2" id="userInitials">JD</div>
+                            <span class="text-sm font-medium text-gray-700 dark:text-gray-300 hidden md:inline" id="userName">John Doe</span>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Page Content -->
+            <main class="p-4 md:p-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
+                    <div class="bg-white dark:bg-darkcard rounded-xl shadow-md p-6 border-t-4 border-yellow-500">
+                        <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Upcoming Payments (7 Days)</h2>
+                        <p class="text-3xl font-bold text-gray-800 dark:text-white mb-1">8</p>
+                        <p class="text-gray-500 dark:text-gray-400">₹24,500</p>
+                    </div>
+                    <div class="bg-white dark:bg-darkcard rounded-xl shadow-md p-6 border-t-4 border-red-500">
+                        <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Overdue Payments</h2>
+                        <p class="text-3xl font-bold text-gray-800 dark:text-white mb-1">3</p>
+                        <p class="text-gray-500 dark:text-gray-400">₹12,750</p>
+                    </div>
+                    <div class="bg-white dark:bg-darkcard rounded-xl shadow-md p-6 border-t-4 border-blue-500">
+                        <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Active Clients</h2>
+                        <p class="text-3xl font-bold text-gray-800 dark:text-white mb-1">42</p>
+                        <p class="text-gray-500 dark:text-gray-400">For Yoga Classes</p>
+                    </div>
+                    <div class="bg-white dark:bg-darkcard rounded-xl shadow-md p-6 border-t-4 border-green-500">
+                        <h2 class="text-sm font-medium text-gray-500 dark:text-gray-400 mb-2">Revenue This Month</h2>
+                        <p class="text-3xl font-bold text-gray-800 dark:text-white mb-1">₹89,250</p>
+                        <p class="text-gray-500 dark:text-gray-400">+12% from last month</p>
+                    </div>
+                </div>
+
+                <!-- Client Management Section -->
+                <div class="bg-white dark:bg-darkcard rounded-xl shadow-md mb-6">
+                    <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+                        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Client Management</h2>
+                        <button id="addClientBtn" class="flex items-center gradient-bg text-white px-4 py-2 rounded-lg font-medium hover:opacity-90 transition">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                            </svg>
+                            Add Client
+                        </button>
+                    </div>
+                    <div class="p-6">
+                        <!-- Client Table -->
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead>
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Client Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Mobile</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Payment Status</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Next Due Date</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="clientTable">
+                                    <!-- Client data will be dynamically loaded -->
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="flex justify-between items-center mt-4">
+                            <div class="text-sm text-gray-600 dark:text-gray-400">Showing <span id="clientCount">0</span> clients</div>
+                            <div class="flex space-x-1" id="pagination">
+                                <!-- Pagination will be dynamically generated -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Client Approval Section -->
+                <div class="bg-white dark:bg-darkcard rounded-xl shadow-md mb-6">
+                    <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+                        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Pending Client Approvals</h2>
+                        <span class="px-3 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200">5 New Requests</span>
+                    </div>
+                    <div class="p-6">
+                        <!-- Pending Clients Table -->
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead>
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Client Name</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Mobile</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Request Date</th>
+                                        <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="pendingClientsTable">
+                                    <!-- Pending client data will be dynamically loaded -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment History Section -->
+                <div class="bg-white dark:bg-darkcard rounded-xl shadow-md">
+                    <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+                        <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Recent Payment History</h2>
+                        <a href="payments.html" class="text-indigo-600 dark:text-indigo-400 hover:underline text-sm font-medium">View All</a>
+                    </div>
+                    <div class="p-6">
+                        <!-- Payment History Table -->
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                                <thead>
+                                    <tr>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Client</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Date</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Amount</th>
+                                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="paymentHistoryTable">
+                                    <!-- Payment history data will be dynamically loaded -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Requests Section -->
+                <div class="p-6">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white mb-4">Pending Requests</h2>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead>
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Client</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Service</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Plan</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Amount</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Request Date</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="pendingRequestsTable">
+                                <!-- Requests will be loaded here dynamically -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Add Client Modal -->
+    <div id="addClientModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50 dark:bg-opacity-70"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div class="bg-white dark:bg-darkcard rounded-xl shadow-xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white">Add New Client</h3>
+                    <button id="closeAddClientModal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+                <form id="addClientForm">
+                    <div class="grid gap-4">
+                        <div>
+                            <label for="clientName" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Name</label>
+                            <input type="text" id="clientName" name="fullname" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white" required pattern="[A-Za-z\s]+" title="Please enter a valid name (letters and spaces only)">
+                        </div>
+                        <div>
+                            <label for="clientEmail" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Email</label>
+                            <input type="email" id="clientEmail" name="email" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white" required>
+                        </div>
+                        <div>
+                            <label for="clientDob" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Date of Birth</label>
+                            <input type="date" id="clientDob" name="dob" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white" required>
+                        </div>
+                        <div>
+                            <label for="clientGender" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Gender</label>
+                            <select id="clientGender" name="gender" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white" required>
+                                <option value="" disabled selected>Select Gender</option>
+                                <option value="male">Male</option>
+                                <option value="female">Female</option>
+                                <option value="prefer-not-to-say">Prefer not to say</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="clientMobile" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Mobile Number</label>
+                            <input type="text" id="clientMobile" name="mobile" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white" required pattern="[0-9]{10}" title="Please enter a valid 10-digit mobile number">
+                        </div>
+                        <div>
+                            <label for="clientAltMobile" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Secondary Mobile Number (Optional)</label>
+                            <input type="text" id="clientAltMobile" name="altMobile" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white" pattern="[0-9]{10}" title="Please enter a valid 10-digit mobile number">
+                        </div>
+                        <div>
+                            <label for="clientAddress" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Full Address</label>
+                            <textarea id="clientAddress" name="address" rows="2" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white" required></textarea>
+                        </div>
+                        <div>
+                            <label for="clientState" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">State</label>
+                            <select id="clientState" name="state" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white" required onchange="updateCitiesInModal()">
+                                <option disabled selected>Select State</option>
+                                <option value="andhra-pradesh">Andhra Pradesh</option>
+                                <option value="arunachal-pradesh">Arunachal Pradesh</option>
+                                <option value="assam">Assam</option>
+                                <option value="bihar">Bihar</option>
+                                <option value="chhattisgarh">Chhattisgarh</option>
+                                <option value="goa">Goa</option>
+                                <option value="gujarat">Gujarat</option>
+                                <option value="haryana">Haryana</option>
+                                <option value="himachal-pradesh">Himachal Pradesh</option>
+                                <option value="jharkhand">Jharkhand</option>
+                                <option value="karnataka">Karnataka</option>
+                                <option value="kerala">Kerala</option>
+                                <option value="madhya-pradesh">Madhya Pradesh</option>
+                                <option value="maharashtra">Maharashtra</option>
+                                <option value="manipur">Manipur</option>
+                                <option value="meghalaya">Meghalaya</option>
+                                <option value="mizoram">Mizoram</option>
+                                <option value="nagaland">Nagaland</option>
+                                <option value="odisha">Odisha</option>
+                                <option value="punjab">Punjab</option>
+                                <option value="rajasthan">Rajasthan</option>
+                                <option value="sikkim">Sikkim</option>
+                                <option value="tamil-nadu">Tamil Nadu</option>
+                                <option value="telangana">Telangana</option>
+                                <option value="tripura">Tripura</option>
+                                <option value="uttar-pradesh">Uttar Pradesh</option>
+                                <option value="uttarakhand">Uttarakhand</option>
+                                <option value="west-bengal">West Bengal</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="clientCity" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">City</label>
+                            <select id="clientCity" name="city" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white" required>
+                                <option disabled selected>Select City</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="clientPincode" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">PIN Code</label>
+                            <input type="text" id="clientPincode" name="pincode" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white" required pattern="[0-9]{6}" title="Please enter a valid 6-digit PIN code">
+                        </div>
+                        <div>
+                            <label for="clientPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Password</label>
+                            <input type="password" id="clientPassword" name="password" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white" required pattern="^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$" title="Password must be at least 8 characters long and include uppercase, lowercase, number and special character">
+                        </div>
+                        <div>
+                            <label for="clientConfirmPassword" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">Confirm Password</label>
+                            <input type="password" id="clientConfirmPassword" name="confirmPassword" class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white" required>
+                        </div>
+                        <div class="text-sm text-gray-600 dark:text-gray-400 mb-2">
+                            <p class="mb-1">Password requirements:</p>
+                            <ul class="list-disc pl-5 text-xs">
+                                <li>At least 8 characters long</li>
+                                <li>Must contain at least one uppercase letter</li>
+                                <li>Must contain at least one lowercase letter</li>
+                                <li>Must contain at least one number</li>
+                                <li>Must contain at least one special character (@$!%*?&)</li>
+                            </ul>
+                        </div>
+                        <div class="flex items-center mt-2">
+                            <input type="checkbox" id="sendWelcomeMessage" name="sendWelcomeMessage" class="h-4 w-4 text-indigo-600 dark:text-indigo-500">
+                            <label for="sendWelcomeMessage" class="ml-2 text-sm text-gray-700 dark:text-gray-300">Send welcome message</label>
+                        </div>
+                    </div>
+                    <div class="mt-6 flex space-x-3">
+                        <button type="button" id="cancelAddClient" class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition">Cancel</button>
+                        <button type="submit" class="flex-1 px-4 py-2 gradient-bg text-white rounded-lg font-medium hover:opacity-90 transition">Add Client</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastNotification" class="fixed bottom-4 right-4 z-50 bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span id="toastMessage">Operation completed successfully!</span>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="ownerDashboard.js"></script>
+    <script>
+    // Add this to your existing JavaScript
+    async function loadPendingRequests() {
+        try {
+            const token = localStorage.getItem('ownerToken');
+            const response = await fetch('http://localhost:3000/api/requests/pending', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                const requests = data.requests;
+                const table = document.getElementById('pendingRequestsTable');
+                
+                if (requests.length === 0) {
+                    table.innerHTML = `
+                        <tr>
+                            <td colspan="6" class="px-6 py-4 text-center">
+                                <div class="py-6">
+                                    <p class="text-gray-500 dark:text-gray-400">No pending requests at this time.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+                
+                table.innerHTML = requests.map(request => `
+                    <tr>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900 dark:text-white">${request.clientId.fullname}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">${request.clientId.email}</div>
+                        </td>
+                        <td class="px-6 py-4">
+                            <div class="text-sm text-gray-900 dark:text-white">${request.serviceId.serviceName}</div>
+                            <div class="text-xs text-gray-500 dark:text-gray-400">${request.serviceId.businessName}</div>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">${request.planType}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">₹${request.planAmount}</td>
+                        <td class="px-6 py-4 text-sm text-gray-900 dark:text-white">${new Date(request.requestDate).toLocaleDateString()}</td>
+                        <td class="px-6 py-4 text-right">
+                            <button 
+                                onclick="handleRequest('${request._id}', 'approved')"
+                                class="bg-green-500 text-white px-3 py-1 rounded text-sm font-medium hover:bg-green-600 transition"
+                            >
+                                Approve
+                            </button>
+                            <button 
+                                onclick="handleRequest('${request._id}', 'rejected')"
+                                class="bg-red-500 text-white px-3 py-1 rounded text-sm font-medium hover:bg-red-600 transition ml-2"
+                            >
+                                Reject
+                            </button>
+                        </td>
+                    </tr>
+                `).join('');
+            } else {
+                showToast('Failed to load pending requests', false);
+            }
+        } catch (error) {
+            console.error('Error loading pending requests:', error);
+            showToast('Error loading pending requests', false);
+        }
+    }
+
+    async function handleRequest(requestId, status) {
+        try {
+            const token = localStorage.getItem('ownerToken');
+            const response = await fetch(`http://localhost:3000/api/requests/update/${requestId}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ status })
+            });
+            
+            const data = await response.json();
+            
+            if (data.success) {
+                showToast(data.message || `Request ${status} successfully`);
+                loadPendingRequests(); // Refresh the requests list
+                
+                // If approved, also refresh the client management list
+                if (status === 'approved') {
+                    // Add code here to refresh client list if needed
+                }
+            } else {
+                showToast(data.message || 'Failed to update request', false);
+            }
+        } catch (error) {
+            console.error('Error handling request:', error);
+            showToast('Error handling request', false);
+        }
+    }
+
+    // Call loadPendingRequests when the page loads
+    document.addEventListener('DOMContentLoaded', () => {
+        loadPendingRequests();
+    });
+    </script>
+</body>
+</html>

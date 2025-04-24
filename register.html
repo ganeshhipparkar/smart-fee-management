@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register - Smart Fee Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .fade-in {
+      animation: fadeIn 0.4s ease-in-out;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-indigo-100 to-purple-200 min-h-screen py-10 px-4">
+
+  <div class="max-w-6xl mx-auto bg-white shadow-2xl rounded-3xl p-10 fade-in">
+    <div class="text-center mb-10">
+      <h1 class="text-4xl font-extrabold text-indigo-700">Smart Fee Management</h1>
+      <p class="text-lg text-gray-600 mt-2">Register as Client or Owner</p>
+    </div>
+
+    <!-- Toggle Buttons -->
+    <div class="flex justify-center gap-4 mb-10">
+      <button onclick="showForm('client')" class="px-6 py-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-all duration-300 shadow-md">Client</button>
+      <button onclick="showForm('owner')" class="px-6 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-all duration-300 shadow-md">Owner</button>
+    </div>
+
+    <!-- Client Registration -->
+    <form id="clientForm" class="space-y-6 hidden fade-in">
+      <h2 class="text-2xl font-semibold text-indigo-700 mb-4">Client Registration</h2>
+      <div class="grid sm:grid-cols-2 gap-6">
+        <input type="text" placeholder="Full Name" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-indigo-400" required />
+        <input type="email" placeholder="Email" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-indigo-400" required />
+        <input type="text" placeholder="Mobile Number" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-indigo-400" required />
+        <input type="text" placeholder="Alternative Mobile Number" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-indigo-400" />
+        <input type="text" placeholder="Full Address" class="border border-gray-300 p-3 rounded-xl w-full sm:col-span-2 focus:outline-none focus:ring-2 focus:ring-indigo-400" required />
+        <input type="text" placeholder="City" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-indigo-400" required />
+        <select class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-indigo-400" required>
+          <option disabled selected>Select State</option>
+          <option>Maharashtra</option>
+          <option>Goa</option>
+        </select>
+        <input type="text" placeholder="PIN Code" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-indigo-400" required />
+        <input type="password" placeholder="Password" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-indigo-400" required />
+        <input type="password" placeholder="Confirm Password" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-indigo-400" required />
+      </div>
+      <button type="submit" class="w-full bg-indigo-600 text-white py-3 rounded-xl font-semibold hover:bg-indigo-700 transition duration-300">Register as Client</button>
+    </form>
+
+    <!-- Owner Registration -->
+    <form id="ownerForm" class="space-y-6 hidden fade-in">
+      <h2 class="text-2xl font-semibold text-purple-700 mb-4">Owner Registration</h2>
+      <div class="grid sm:grid-cols-2 gap-6">
+        <input type="text" placeholder="Business Name" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-purple-400" required />
+        <input type="text" placeholder="Owner Full Name" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-purple-400" required />
+        <input type="email" placeholder="Business Email" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-purple-400" required />
+        <input type="text" placeholder="Business Phone" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-purple-400" required />
+        <input type="text" placeholder="Business Address" class="border border-gray-300 p-3 rounded-xl w-full sm:col-span-2 focus:outline-none focus:ring-2 focus:ring-purple-400" required />
+        <input type="text" placeholder="Business Registration Number" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-purple-400" required />
+        <input type="text" placeholder="Tax ID / GST Number" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-purple-400" required />
+        <input type="text" placeholder="Service Name" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-purple-400" required />
+        <textarea placeholder="Service Description" rows="2" class="border border-gray-300 p-3 rounded-xl w-full sm:col-span-2 focus:outline-none focus:ring-2 focus:ring-purple-400"></textarea>
+        <input type="number" placeholder="Max Service Capacity" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-purple-400" required />
+        <select class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-purple-400" required>
+          <option disabled selected>Select Business Type</option>
+          <option>Gym</option>
+          <option>Yoga</option>
+          <option>Music Class</option>
+        </select>
+        <select class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-purple-400" required>
+          <option disabled selected>Payment Setting</option>
+          <option>Monthly</option>
+          <option>Quarterly</option>
+          <option>Half-Yearly</option>
+          <option>Yearly</option>
+        </select>
+        <input type="password" placeholder="Password" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-purple-400" required />
+        <input type="password" placeholder="Confirm Password" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-purple-400" required />
+        <div class="col-span-2">
+          <label class="block mb-1 font-medium text-gray-700">Business Registration Certificate</label>
+          <input type="file" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-purple-400" />
+        </div>
+        <div class="col-span-2">
+          <label class="block mb-1 font-medium text-gray-700">Tax Registration Document</label>
+          <input type="file" class="border border-gray-300 p-3 rounded-xl w-full focus:outline-none focus:ring-2 focus:ring-purple-400" />
+        </div>
+      </div>
+      <button type="submit" class="w-full bg-purple-600 text-white py-3 rounded-xl font-semibold hover:bg-purple-700 transition duration-300">Register as Owner</button>
+    </form>
+  </div>
+
+  <script src="register.js"></script>
+</body>
+</html>

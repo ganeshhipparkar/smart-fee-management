@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Services - Smart Fee Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/gsap@3.12.2/dist/gsap.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="clientServices.css">
+    <script>
+        // Tailwind dark mode config
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#121826',
+                        darkcard: '#1E293B',
+                        darktext: '#E2E8F0'
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="dark-transition bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-slate-900 dark:via-darkbg dark:to-slate-900 min-h-screen">
+    <nav class="glass-effect fixed w-full z-50 px-6 py-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="w-10 h-10 rounded-lg gradient-bg flex items-center justify-center text-white font-bold text-xl mr-3">S</div>
+                <span class="text-xl font-bold text-indigo-800 dark:text-indigo-300">SmartFee</span>
+            </div>
+            <div class="hidden md:flex space-x-8">
+                <a href="ClientLanding.html" class="text-gray-700 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 transition">Home</a>
+                <a href="clientDashboard.html" class="text-gray-700 dark:text-gray-300 hover:text-indigo-700 dark:hover:text-indigo-400 transition">Dashboard</a>
+                <a href="clientServices.html" class="text-indigo-700 dark:text-indigo-400 font-medium">Services</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle dark mode"></div>
+                <button id="logoutBtn" class="gradient-bg px-4 py-2 rounded-lg text-white font-medium hover:opacity-90 transition flex items-center">
+                    <span class="material-icons text-sm mr-1">logout</span>
+                    <span class="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-32 pb-16 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <h1 class="text-3xl md:text-4xl font-bold text-gray-800 dark:text-white mb-4">
+                    Available Services
+                </h1>
+                <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                    Browse all available services and subscribe to the ones you need.
+                </p>
+            </div>
+
+            <!-- Services Table -->
+            <div class="bg-white dark:bg-darkcard rounded-xl shadow-md mb-6">
+                <div class="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Available Services</h2>
+                    <div class="flex items-center">
+                        <input type="text" id="serviceSearch" placeholder="Search services..." class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg dark:bg-gray-800 dark:text-white text-sm">
+                    </div>
+                </div>
+                <div class="p-6">
+                    <!-- Services Table -->
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
+                            <thead>
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Business Info</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Contact Details</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Service Details</th>
+                                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Payment Options</th>
+                                    <th class="px-6 py-3 text-right text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-200 dark:divide-gray-700" id="servicesTable">
+                                <!-- Services will be loaded here dynamically -->
+                                <!-- Initial empty state -->
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center">
+                                        <div class="py-6">
+                                            <p class="text-gray-500 dark:text-gray-400">Loading services...</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Service Enrollment Modal -->
+    <div id="enrollModal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50 dark:bg-opacity-70"></div>
+        <div class="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-full max-w-md max-h-[90vh] overflow-y-auto">
+            <div class="bg-white dark:bg-darkcard rounded-xl shadow-xl p-6">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800 dark:text-white" id="modalServiceTitle">Service Title</h3>
+                    <button id="closeEnrollModal" class="text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+
+                <div id="modalServiceDetails" class="mb-6">
+                    <p class="text-gray-600 dark:text-gray-300 mb-4" id="modalServiceDescription">Service description will appear here.</p>
+                    
+                    <div class="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg mb-4">
+                        <p class="text-sm text-indigo-800 dark:text-indigo-300">
+                            <span class="font-semibold">Provider:</span> <span id="modalServiceProvider">Business Name</span>
+                        </p>
+                        <p class="text-sm text-indigo-800 dark:text-indigo-300 mt-1">
+                            <span class="font-semibold">Service ID:</span> <span id="modalServiceID">123456</span>
+                        </p>
+                    </div>
+                    
+                    <div class="mb-4">
+                        <h4 class="font-medium text-gray-800 dark:text-white mb-2">Select a Payment Plan</h4>
+                        <div class="plan-selector" id="planSelector">
+                            <!-- Payment plans will be added dynamically -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex space-x-3">
+                    <button type="button" id="cancelEnrollment" class="flex-1 px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-800 dark:text-gray-200 rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition">Cancel</button>
+                    <button type="button" id="requestEnrollment" class="flex-1 px-4 py-2 gradient-bg text-white rounded-lg font-medium hover:opacity-90 transition">Request Enrollment</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toastNotification" class="fixed bottom-4 right-4 z-50 bg-green-500 text-white px-4 py-3 rounded-lg shadow-lg transform translate-y-20 opacity-0 transition-all duration-300 flex items-center">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        <span id="toastMessage">Operation completed successfully!</span>
+    </div>
+
+    <footer class="text-center text-gray-500 dark:text-gray-400 text-sm p-4 mt-auto">
+        &copy; 2025 Smart Fee Management. All rights reserved.
+    </footer>
+
+    <script>
+
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const token = localStorage.getItem('token');
+            let clientUser;
+            
+            try {
+                clientUser = JSON.parse(localStorage.getItem('clientUser'));
+            } catch (e) {
+                console.error('Error parsing client user data:', e);
+                clientUser = null;
+            }
+            
+            // Debug information to console
+            console.log('Auth check - isLoggedIn:', isLoggedIn);
+            console.log('Auth check - token exists:', !!token);
+            console.log('Auth check - clientUser exists:', !!clientUser);
+
+            if (!isLoggedIn || !clientUser || !token) {
+                console.log('Not authenticated, redirecting to login');
+                // Redirect to login page if not logged in
+                window.location.href = 'clientLogin.html';
+                return;
+            }
+
+            // Theme toggle functionality
+            const htmlElement = document.documentElement;
+            const themeToggle = document.getElementById('themeToggle');
+
+            // Check for saved theme preference or respect OS setting
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            // Apply the right theme
+            if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                htmlElement.classList.add('dark');
+            } else {
+                htmlElement.classList.remove('dark');
+            }
+
+            // Toggle theme when button is clicked
+            themeToggle.addEventListener('click', () => {
+                if (htmlElement.classList.contains('dark')) {
+                    htmlElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    htmlElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+
+            // Toast notification functionality
+            const showToast = (message, isSuccess = true) => {
+                const toast = document.getElementById('toastNotification');
+                const toastMessage = document.getElementById('toastMessage');
+                
+                // Set message and color based on success/error
+                toastMessage.textContent = message;
+                toast.className = toast.className.replace(/bg-\w+-\d+/, isSuccess ? 'bg-green-500' : 'bg-red-500');
+                
+                // Animation
+                gsap.to(toast, { 
+                    y: 0, 
+                    opacity: 1, 
+                    duration: 0.3,
+                    ease: 'power2.out',
+                    onComplete: () => {
+                        setTimeout(() => {
+                            gsap.to(toast, { 
+                                y: 20,
+                                opacity: 0,
+                                duration: 0.3,
+                                ease: 'power2.in'
+                            });
+                        }, 5000);
+                    }
+                });
+            };
+
+            // Logout functionality
+            const logoutBtn = document.getElementById('logoutBtn');
+            logoutBtn.addEventListener('click', () => {
+                // Clear user data
+                localStorage.removeItem('clientUser');
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('token');
+                
+                // Redirect to login page
+                window.location.href = 'clientLogin.html';
+            });
+
+            // Modal functionality
+            const enrollModal = document.getElementById('enrollModal');
+            const closeEnrollModal = document.getElementById('closeEnrollModal');
+            const cancelEnrollment = document.getElementById('cancelEnrollment');
+            
+            const closeModal = () => {
+                gsap.to(enrollModal.querySelector('div > div'), { 
+                    y: -20, 
+                    opacity: 0, 
+                    duration: 0.2,
+                    ease: 'power2.in',
+                    onComplete: () => {
+                        enrollModal.classList.add('hidden');
+                    }
+                });
+            };
+            
+            closeEnrollModal.addEventListener('click', closeModal);
+            cancelEnrollment.addEventListener('click', closeModal);
+            
+            // Service enrollment request
+            const requestEnrollment = document.getElementById('requestEnrollment');
+            requestEnrollment.addEventListener('click', async () => {
+                // Get the selected plan
+                const selectedPlan = document.querySelector('input[name="paymentPlan"]:checked');
+                
+                if (!selectedPlan) {
+                    showToast('Please select a payment plan', false);
+                    return;
+                }
+                
+                const serviceId = requestEnrollment.dataset.serviceId;
+                const planType = selectedPlan.dataset.type;
+                const planAmount = parseFloat(selectedPlan.dataset.amount);
+
+                // Get the token from localStorage
+                const token = localStorage.getItem('token');
+                
+                // Debug info
+                console.log('Enrollment request with:', {
+                    serviceId,
+                    planType,
+                    planAmount,
+                    tokenExists: !!token
+                });
+                
+                try {
+                    // Disable button and show loading state
+                    requestEnrollment.disabled = true;
+                    requestEnrollment.innerHTML = '<svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-white inline-block" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg> Processing...';
+                    
+                    // Send enrollment request
+                    const response = await fetch('http://localhost:3000/api/requests/enroll', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: JSON.stringify({
+                            serviceId,
+                            planType,
+                            planAmount
+                        })
+                    });
+                    
+                    const data = await response.json();
+                    console.log('Enrollment response:', data);
+                    
+                    // Reset button state
+                    requestEnrollment.disabled = false;
+                    requestEnrollment.textContent = 'Request Enrollment';
+                    
+                    if (data.success) {
+                        closeModal();
+                        showToast('Enrollment request sent successfully!');
+                    } else {
+                        showToast(data.message || 'Failed to send enrollment request', false);
+                    }
+                    
+                } catch (error) {
+                    console.error('Error sending enrollment request:', error);
+                    showToast('Error processing your request. Please try again later.', false);
+                    
+                    // Reset button state
+                    requestEnrollment.disabled = false;
+                    requestEnrollment.textContent = 'Request Enrollment';
+                }
+            });
+            
+            // Add this near the top of your fetchAndDisplayServices function
+            async function fetchAndDisplayServices() {
+                try {
+                    console.log("Fetching services...");
+                    const servicesTable = document.getElementById('servicesTable');
+                    servicesTable.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center">Loading services...</td></tr>`;
+                    
+                    // First check if server is reachable
+                    try {
+                        const healthCheck = await fetch('http://localhost:3000/api/health');
+                        const healthData = await healthCheck.json();
+                        console.log("Server health check:", healthData);
+                        
+                        if (!healthData.db.connected) {
+                            throw new Error("Database not connected");
+                        }
+                    } catch (healthError) {
+                        console.error("Health check failed:", healthError);
+                        throw new Error("Server not reachable");
+                    }
+                    
+                    const response = await fetch('http://localhost:3000/api/owner-services');
+                    console.log("Response status:", response.status);
+                    
+                    if (!response.ok) {
+                        throw new Error(`Server responded with status: ${response.status}`);
+                    }
+                    
+                    // Log the raw response text to help debug
+                    const responseText = await response.text();
+                    console.log("Raw response:", responseText);
+                    
+                    // Now parse it as JSON (we'll need to parse it again since we consumed the response)
+                    let data;
+                    try {
+                        data = JSON.parse(responseText);
+                        console.log("Parsed data:", data);
+                    } catch (e) {
+                        console.error("Failed to parse JSON:", e);
+                        showToast("Invalid response from server", false);
+                        return;
+                    }
+                    
+                    if (data.success) {
+                        console.log("Services received:", data.services.length);
+                        
+                        if (data.services.length === 0) {
+                            servicesTable.innerHTML = `
+                                <tr>
+                                    <td colspan="5" class="px-6 py-4 text-center">
+                                        <div class="py-6">
+                                            <p class="text-gray-500 dark:text-gray-400">No services available at the moment.</p>
+                                        </div>
+                                    </td>
+                                </tr>
+                            `;
+                            return;
+                        }
+                        
+                        servicesTable.innerHTML = data.services.map(service => {
+                            // Ensure payment settings is always an array
+                            const paymentOptions = service.paymentSettings && service.paymentSettings.length > 0 
+                                ? service.paymentSettings 
+                                : (service.paymentSetting ? [service.paymentSetting] : ['Contact for details']);
+                                
+                            return `
+                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-800/50">
+                                <td class="px-6 py-4">
+                                    <div class="flex items-center">
+                                        <div>
+                                            <div class="font-medium text-gray-900 dark:text-white">${service.businessName || 'N/A'}</div>
+                                            <div class="text-sm text-gray-500 dark:text-gray-400">${service.businessType || 'Business'}</div>
+                                            <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Owner: ${service.ownerName || 'N/A'}</div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-900 dark:text-white">${service.businessEmail || 'N/A'}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">${service.businessPhone || 'No phone available'}</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">${service.businessAddress || 'No address available'}</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Reg #: ${service.registrationNo || 'N/A'}</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-900 dark:text-white">${service.serviceName || 'Service'}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-400">${service.serviceDescription || 'No description available'}</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Capacity: ${service.capacity || 'Not specified'}</div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Tax ID: ${service.taxID || 'N/A'}</div>
+                                </td>
+                                <td class="px-6 py-4">
+                                    <div class="text-sm text-gray-900 dark:text-white">
+                                        ${paymentOptions.join(', ')}
+                                    </div>
+                                    <div class="text-xs text-gray-500 dark:text-gray-400 mt-1">Registered: ${new Date(service.registrationDate).toLocaleDateString()}</div>
+                                </td>
+                                <td class="px-6 py-4 text-right">
+                                    <button 
+                                        class="gradient-bg px-4 py-2 rounded-lg text-white text-sm font-medium hover:opacity-90 transition"
+                                        onclick="showEnrollmentModal('${service._id}', '${service.serviceName || 'Service'}', '${service.businessName || 'Business'}', '${paymentOptions.join(',')}', '${service.serviceDescription || ''}', '${service._id}')"
+                                    >
+                                        Enroll
+                                    </button>
+                                </td>
+                            </tr>
+                        `}).join('');
+
+                        // Add search functionality
+                        const searchInput = document.getElementById('serviceSearch');
+                        searchInput.addEventListener('input', (e) => {
+                            const searchTerm = e.target.value.toLowerCase();
+                            const rows = servicesTable.getElementsByTagName('tr');
+                            
+                            Array.from(rows).forEach(row => {
+                                const text = row.textContent.toLowerCase();
+                                row.style.display = text.includes(searchTerm) ? '' : 'none';
+                            });
+                        });
+                    } else {
+                        showToast('Failed to load services', false);
+                        servicesTable.innerHTML = `
+                            <tr>
+                                <td colspan="5" class="px-6 py-4 text-center">
+                                    <div class="py-6">
+                                        <p class="text-gray-500 dark:text-gray-400">Error loading services. Please try again later.</p>
+                                    </div>
+                                </td>
+                            </tr>
+                        `;
+                    }
+                } catch (error) {
+                    console.error('Error fetching services:', error);
+                    showToast('Failed to load services', false);
+                    const servicesTable = document.getElementById('servicesTable');
+                    servicesTable.innerHTML = `
+                        <tr>
+                            <td colspan="5" class="px-6 py-4 text-center">
+                                <div class="py-6">
+                                    <p class="text-gray-500 dark:text-gray-400">Error connecting to server. Please try again later.</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }
+            }
+
+            // Function to show enrollment modal
+            function showEnrollmentModal(serviceId, serviceName, businessName, paymentOptions, serviceDescription, ownerId) {
+                const modalServiceTitle = document.getElementById('modalServiceTitle');
+                const modalServiceProvider = document.getElementById('modalServiceProvider');
+                const modalServiceID = document.getElementById('modalServiceID');
+                const planSelector = document.getElementById('planSelector');
+                const requestEnrollment = document.getElementById('requestEnrollment');
+                
+                modalServiceTitle.textContent = serviceName;
+                modalServiceProvider.textContent = businessName;
+                modalServiceID.textContent = serviceId;
+                
+                // Store the serviceId and ownerId on the button element
+                requestEnrollment.dataset.serviceId = serviceId;
+                requestEnrollment.dataset.ownerId = ownerId;
+
+                // Create payment plan options
+                const paymentOptionsArray = paymentOptions.split(',');
+                planSelector.innerHTML = paymentOptionsArray.map((option, index) => `
+                    <div class="flex items-center p-3 border rounded-lg mb-2 cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400">
+                        <input type="radio" name="paymentPlan" id="plan-${index}" value="${option}" data-type="${option}" data-amount="${option.match(/\d+/)?.[0] || 0}" class="mr-3">
+                        <label class="flex-1 cursor-pointer" for="plan-${index}">
+                            <span class="block text-gray-800 dark:text-white font-medium">${option}</span>
+                        </label>
+                    </div>
+                `).join('');
+
+                enrollModal.classList.remove('hidden');
+            }
+
+            // Initial load of services
+            fetchAndDisplayServices();
+        });
+    </script>
+</body>
+</html>

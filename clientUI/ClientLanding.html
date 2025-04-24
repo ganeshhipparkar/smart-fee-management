@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en" class="light">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Welcome - Smart Fee Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script>
+        // Tailwind dark mode config
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        darkbg: '#121826',
+                        darkcard: '#1E293B',
+                        darktext: '#E2E8F0'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+
+        * {
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%);
+        }
+
+        html.dark .gradient-bg {
+            background: linear-gradient(135deg, #4F46E5 0%, #9333EA 100%);
+        }
+
+        .gradient-hover {
+            transition: all 0.3s ease;
+            background-size: 200% 200%;
+            background-position: 0% 0%;
+        }
+
+        .gradient-hover:hover {
+            background-position: 100% 100%;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px -5px rgba(99, 102, 241, 0.4);
+        }
+
+        html.dark .gradient-hover:hover {
+            box-shadow: 0 10px 25px -5px rgba(79, 70, 229, 0.4);
+        }
+
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        html.dark .glass-effect {
+            background: rgba(15, 23, 42, 0.8);
+        }
+
+        /* Theme toggle styles */
+        .theme-toggle {
+            cursor: pointer;
+            position: relative;
+            width: 48px;
+            height: 24px;
+            background-color: #E2E8F0;
+            border-radius: 24px;
+            transition: all 0.3s;
+        }
+
+        html.dark .theme-toggle {
+            background-color: #334155;
+        }
+
+        .theme-toggle::after {
+            content: "";
+            position: absolute;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            background-color: #6366F1;
+            transition: all 0.3s;
+        }
+
+        html.dark .theme-toggle::after {
+            transform: translateX(24px);
+            background-color: #A855F7;
+        }
+
+        /* Dark mode transition */
+        .dark-transition {
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+        
+        /* Animation for cards */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .animate-fadeInUp {
+            animation: fadeInUp 0.5s forwards;
+        }
+
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+
+        .card-hover:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="dark-transition bg-gradient-to-br from-indigo-100 to-purple-100 dark:from-slate-900 dark:via-darkbg dark:to-slate-900 min-h-screen">
+    <nav class="glass-effect fixed w-full z-50 px-6 py-4">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <div class="flex items-center">
+                <div class="w-10 h-10 rounded-lg gradient-bg flex items-center justify-center text-white font-bold text-xl mr-3">S</div>
+                <span class="text-xl font-bold text-indigo-800 dark:text-indigo-300">SmartFee</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                <div class="theme-toggle" id="themeToggle" role="button" aria-label="Toggle dark mode"></div>
+                <button id="logoutBtn" class="gradient-bg px-4 py-2 rounded-lg text-white font-medium hover:opacity-90 transition flex items-center">
+                    <span class="material-icons text-sm mr-1">logout</span>
+                    <span class="hidden sm:inline">Logout</span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <div class="pt-32 pb-16 px-4">
+        <div class="max-w-6xl mx-auto">
+            <div class="text-center mb-12">
+                <h1 class="text-4xl md:text-5xl font-bold text-gray-800 dark:text-white mb-4">
+                    Welcome, <span id="clientName" class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-purple-600">Client</span>!
+                </h1>
+                <p class="text-lg text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">
+                    Thank you for using SmartFee. Manage your payments and services with ease.
+                </p>
+            </div>
+
+            <div class="bg-white dark:bg-darkcard rounded-xl shadow-lg p-8 text-center">
+                <div class="flex items-center justify-center w-20 h-20 mx-auto mb-6 rounded-full gradient-bg">
+                    <span class="material-icons text-white text-3xl">dashboard</span>
+                </div>
+                <h2 class="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Your Home Page</h2>
+                <p class="text-gray-600 dark:text-gray-300 mb-6 max-w-2xl mx-auto">
+                    This is your client home page. From here, you can access all our services and manage your account.
+                </p>
+                <a href="clientServices.html" class="inline-block px-6 py-3 rounded-lg gradient-bg gradient-hover text-white font-medium">
+                    Browse Available Services
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <footer class="text-center text-gray-500 dark:text-gray-400 text-sm p-4 mt-auto">
+        &copy; 2025 Smart Fee Management. All rights reserved.
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if user is logged in
+            const isLoggedIn = localStorage.getItem('isLoggedIn') === 'true';
+            const token = localStorage.getItem('token');
+            let clientUser;
+            
+            try {
+                clientUser = JSON.parse(localStorage.getItem('clientUser'));
+            } catch (e) {
+                console.error('Error parsing client user data:', e);
+                clientUser = null;
+            }
+            
+            // Debug information to console
+            console.log('Auth check - isLoggedIn:', isLoggedIn);
+            console.log('Auth check - token exists:', !!token);
+            console.log('Auth check - clientUser exists:', !!clientUser);
+
+            if (!isLoggedIn || !clientUser || !token) {
+                console.log('Not authenticated, redirecting to login');
+                // Redirect to login page if not logged in
+                window.location.href = 'clientLogin.html';
+                return;
+            }
+            
+            // Set client name in welcome message
+            const clientNameElement = document.getElementById('clientName');
+            if (clientNameElement && clientUser.fullName) {
+                clientNameElement.textContent = clientUser.fullName;
+            }
+
+            // Theme toggle functionality
+            const htmlElement = document.documentElement;
+            const themeToggle = document.getElementById('themeToggle');
+
+            // Check for saved theme preference or respect OS setting
+            const savedTheme = localStorage.getItem('theme');
+            const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            // Apply the right theme
+            if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+                htmlElement.classList.add('dark');
+            } else {
+                htmlElement.classList.remove('dark');
+            }
+
+            // Toggle theme when button is clicked
+            themeToggle.addEventListener('click', () => {
+                if (htmlElement.classList.contains('dark')) {
+                    htmlElement.classList.remove('dark');
+                    localStorage.setItem('theme', 'light');
+                } else {
+                    htmlElement.classList.add('dark');
+                    localStorage.setItem('theme', 'dark');
+                }
+            });
+
+            // Logout functionality
+            const logoutBtn = document.getElementById('logoutBtn');
+            logoutBtn.addEventListener('click', () => {
+                // Clear user data
+                localStorage.removeItem('clientUser');
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('token');
+                
+                // Redirect to login page
+                window.location.href = 'clientLogin.html';
+            });
+
+            // Animations with GSAP
+            gsap.from('.bg-white', {
+                y: 30,
+                opacity: 0,
+                duration: 0.8,
+                ease: 'power3.out'
+            });
+        });
+    </script>
+</body>
+</html> 
